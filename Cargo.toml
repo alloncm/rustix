@@ -20,8 +20,10 @@ bitflags = { version = "2.4.0", default-features = false }
 itoa = { version = "1.0.1", default-features = false, optional = true }
 
 # Special dependencies used in rustc-dep-of-std mode.
-rustc-std-workspace-core = { version = "1.0.0", optional = true }
-rustc-std-workspace-alloc = { version = "1.0.0", optional = true }
+core = { version = "1.0.0", optional = true, package = "rustc-std-workspace-core" }
+# Also acts as a feature to enable features which depend on the Rust global allocator,
+# such as functions that return owned strings or `Vec`s.
+alloc = { version = "1.0.0", optional = true, package = "rustc-std-workspace-alloc" }
 compiler_builtins = { version = '0.1.49', optional = true }
 
 # The procfs feature needs once_cell.
@@ -231,16 +233,12 @@ linux_4_11 = []
 # Enable all optimizations for the latest Linux versions.
 linux_latest = ["linux_4_11"]
 
-# Enable features which depend on the Rust global allocator, such as functions
-# that return owned strings or `Vec`s.
-alloc = []
-
 # This is used in the port of std to rustix. This is experimental and not meant
 # for regular use.
 rustc-dep-of-std = [
-    "dep:rustc-std-workspace-core",
-    "dep:rustc-std-workspace-alloc",
-    "dep:compiler_builtins",
+    "core",
+    "alloc",
+    "compiler_builtins",
     "linux-raw-sys/rustc-dep-of-std",
     "bitflags/rustc-dep-of-std",
     "compiler_builtins?/rustc-dep-of-std",
